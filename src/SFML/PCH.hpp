@@ -39,7 +39,6 @@
 
 #endif // SFML_SYSTEM_WINDOWS
 
-#include <SFML/Graphics/Rect.hpp>
 #include <SFML/System/Err.hpp>
 #include <SFML/System/String.hpp>
 #include <SFML/System/Time.hpp>
