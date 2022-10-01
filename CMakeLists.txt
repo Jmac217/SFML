@@ -289,7 +289,7 @@ if(SFML_INSTALL_PKGCONFIG_FILES)
 endif()
 
 # option to enable precompiled headers
-sfml_set_option(SFML_ENABLE_PCH TRUE BOOL "TRUE to enable precompiled headers for SFML builds -- only supported on Windows/Linux and for static library builds")
+sfml_set_option(SFML_ENABLE_PCH FALSE BOOL "TRUE to enable precompiled headers for SFML builds -- only supported on Windows/Linux and for static library builds")
 
 if(SFML_ENABLE_PCH AND BUILD_SHARED_LIBS)
     message(FATAL_ERROR "Precompiled headers are currently not supported for shared library builds")
