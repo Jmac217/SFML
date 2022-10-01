@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////
 //
 // SFML - Simple and Fast Multimedia Library
-// Copyright (C) 2007-2021 Laurent Gomila (laurent@sfml-dev.org)
+// Copyright (C) 2007-2022 Laurent Gomila (laurent@sfml-dev.org)
 //
 // This software is provided 'as-is', without any express or implied warranty.
 // In no event will the authors be held liable for any damages arising from the use of this software.
@@ -29,16 +29,22 @@
 // Headers
 ////////////////////////////////////////////////////////////
 #include <SFML/Window/Export.hpp>
+
+#include <SFML/System/Vector2.hpp>
 #include <SFML/Window/GlResource.hpp>
-#include <SFML/Window/ContextSettings.hpp>
+
+#include <cstdint>
+#include <memory>
 
 
 namespace sf
 {
 namespace priv
 {
-    class GlContext;
+class GlContext;
 }
+
+struct ContextSettings;
 
 using GlFunctionPointer = void (*)();
 
@@ -49,7 +55,6 @@ using GlFunctionPointer = void (*)();
 class SFML_WINDOW_API Context : GlResource
 {
 public:
-
     ////////////////////////////////////////////////////////////
     /// \brief Default constructor
     ///
@@ -141,7 +146,7 @@ public:
     /// \return The active context's ID or 0 if no context is currently active
     ///
     ////////////////////////////////////////////////////////////
-    static Uint64 getActiveContextId();
+    static std::uint64_t getActiveContextId();
 
     ////////////////////////////////////////////////////////////
     /// \brief Construct a in-memory context
@@ -154,14 +159,13 @@ public:
     /// \param height   Back buffer height
     ///
     ////////////////////////////////////////////////////////////
-    Context(const ContextSettings& settings, unsigned int width, unsigned int height);
+    Context(const ContextSettings& settings, const Vector2u& size);
 
 private:
-
     ////////////////////////////////////////////////////////////
     // Member data
     ////////////////////////////////////////////////////////////
-    priv::GlContext* m_context; //!< Internal OpenGL context
+    std::unique_ptr<priv::GlContext> m_context; //!< Internal OpenGL context
 };
 
 } // namespace sf

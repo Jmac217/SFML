@@ -1,5 +1,4 @@
-
-set(SRCROOT ${PROJECT_SOURCE_DIR}/examples/cocoa)
+enable_language(OBJC OBJCXX)
 
 # Usage: compile_xib(INPUT path/to/file.xib OUTPUT path/to/file.nib)
 function(compile_xib)
@@ -30,22 +29,22 @@ function(compile_xib)
 endfunction()
 
 # all source files
-set(SRC ${SRCROOT}/CocoaAppDelegate.h
-        ${SRCROOT}/CocoaAppDelegate.mm
-        ${SRCROOT}/NSString+stdstring.h
-        ${SRCROOT}/NSString+stdstring.mm
-        ${SRCROOT}/main.m)
+set(SRC CocoaAppDelegate.h
+        CocoaAppDelegate.mm
+        NSString+stdstring.h
+        NSString+stdstring.mm
+        main.m)
 
-compile_xib(INPUT "${SRCROOT}/MainMenu.xib" OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/MainMenu.nib")
+compile_xib(INPUT "${CMAKE_CURRENT_SOURCE_DIR}/MainMenu.xib" OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/MainMenu.nib")
 
 # all resource files
-set(RESOURCES ${SRCROOT}/resources/icon.icns
-              ${SRCROOT}/resources/tuffy.ttf
-              ${SRCROOT}/resources/logo.png
-              ${SRCROOT}/resources/blue.png
-              ${SRCROOT}/resources/green.png
-              ${SRCROOT}/resources/red.png
-              ${SRCROOT}/resources/Credits.rtf
+set(RESOURCES resources/icon.icns
+              resources/tuffy.ttf
+              resources/logo.png
+              resources/blue.png
+              resources/green.png
+              resources/red.png
+              resources/Credits.rtf
               ${CMAKE_CURRENT_BINARY_DIR}/MainMenu.nib)
 set_source_files_properties(${RESOURCES} PROPERTIES
                             MACOSX_PACKAGE_LOCATION Resources)
@@ -54,8 +53,8 @@ set_source_files_properties(${RESOURCES} PROPERTIES
 sfml_add_example(cocoa
                  SOURCES ${SRC}
                  BUNDLE_RESOURCES ${RESOURCES}
-                 DEPENDS sfml-system sfml-window sfml-graphics)
+                 DEPENDS SFML::System SFML::Window SFML::Graphics)
 set_target_properties(cocoa PROPERTIES
                       MACOSX_BUNDLE TRUE
-                      MACOSX_BUNDLE_INFO_PLIST ${SRCROOT}/resources/Cocoa-Info.plist)
-target_link_libraries(cocoa PRIVATE "-framework Cocoa" "-framework Foundation" sfml-graphics)
+                      MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/resources/Cocoa-Info.plist)
+target_link_libraries(cocoa PRIVATE "-framework Cocoa" "-framework Foundation" SFML::Graphics)

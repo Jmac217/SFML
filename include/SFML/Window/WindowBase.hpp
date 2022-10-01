@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////
 //
 // SFML - Simple and Fast Multimedia Library
-// Copyright (C) 2007-2021 Laurent Gomila (laurent@sfml-dev.org)
+// Copyright (C) 2007-2022 Laurent Gomila (laurent@sfml-dev.org)
 //
 // This software is provided 'as-is', without any express or implied warranty.
 // In no event will the authors be held liable for any damages arising from the use of this software.
@@ -28,22 +28,25 @@
 ////////////////////////////////////////////////////////////
 // Headers
 ////////////////////////////////////////////////////////////
-#include <SFML/Window/Cursor.hpp>
 #include <SFML/Window/Export.hpp>
-#include <SFML/Window/VideoMode.hpp>
+
+#include <SFML/System/Vector2.hpp>
 #include <SFML/Window/Vulkan.hpp>
 #include <SFML/Window/WindowHandle.hpp>
 #include <SFML/Window/WindowStyle.hpp>
-#include <SFML/System/Clock.hpp>
-#include <SFML/System/String.hpp>
-#include <SFML/System/Vector2.hpp>
+
+#include <memory>
 
 
 namespace sf
 {
+class Cursor;
+class String;
+class VideoMode;
+
 namespace priv
 {
-    class WindowImpl;
+class WindowImpl;
 }
 
 class Event;
@@ -55,7 +58,6 @@ class Event;
 class SFML_WINDOW_API WindowBase
 {
 public:
-
     ////////////////////////////////////////////////////////////
     /// \brief Default constructor
     ///
@@ -79,7 +81,7 @@ public:
     /// \param style %Window style, a bitwise OR combination of sf::Style enumerators
     ///
     ////////////////////////////////////////////////////////////
-    WindowBase(VideoMode mode, const String& title, Uint32 style = Style::Default);
+    WindowBase(VideoMode mode, const String& title, std::uint32_t style = Style::Default);
 
     ////////////////////////////////////////////////////////////
     /// \brief Construct the window from an existing control
@@ -121,7 +123,7 @@ public:
     /// \param style %Window style, a bitwise OR combination of sf::Style enumerators
     ///
     ////////////////////////////////////////////////////////////
-    virtual void create(VideoMode mode, const String& title, Uint32 style = Style::Default);
+    virtual void create(VideoMode mode, const String& title, std::uint32_t style = Style::Default);
 
     ////////////////////////////////////////////////////////////
     /// \brief Create (or recreate) the window from an existing control
@@ -164,8 +166,7 @@ public:
     /// thus you should always call this function in a loop
     /// to make sure that you process every pending event.
     /// \code
-    /// sf::Event event;
-    /// while (window.pollEvent(event))
+    /// for (sf::Event event; window.pollEvent(event);)
     /// {
     ///    // process event...
     /// }
@@ -272,8 +273,7 @@ public:
     ///
     /// The OS default icon is used by default.
     ///
-    /// \param width  Icon's width, in pixels
-    /// \param height Icon's height, in pixels
+    /// \param size   Icon's width and height, in pixels
     /// \param pixels Pointer to the array of pixels in memory. The
     ///               pixels are copied, so you need not keep the
     ///               source alive after calling this function.
@@ -281,7 +281,7 @@ public:
     /// \see setTitle
     ///
     ////////////////////////////////////////////////////////////
-    void setIcon(unsigned int width, unsigned int height, const Uint8* pixels);
+    void setIcon(const Vector2u& size, const std::uint8_t* pixels);
 
     ////////////////////////////////////////////////////////////
     /// \brief Show or hide the window
@@ -415,10 +415,11 @@ public:
     /// \return True if surface creation was successful, false otherwise
     ///
     ////////////////////////////////////////////////////////////
-    [[nodiscard]] bool createVulkanSurface(const VkInstance& instance, VkSurfaceKHR& surface, const VkAllocationCallbacks* allocator = nullptr);
+    [[nodiscard]] bool createVulkanSurface(const VkInstance&            instance,
+                                           VkSurfaceKHR&                surface,
+                                           const VkAllocationCallbacks* allocator = nullptr);
 
 protected:
-
     ////////////////////////////////////////////////////////////
     /// \brief Function called after the window has been created
     ///
@@ -439,7 +440,6 @@ protected:
     virtual void onResize();
 
 private:
-
     friend class Window;
 
     ////////////////////////////////////////////////////////////
@@ -481,8 +481,8 @@ private:
     ////////////////////////////////////////////////////////////
     // Member data
     ////////////////////////////////////////////////////////////
-    priv::WindowImpl* m_impl;           //!< Platform-specific implementation of the window
-    Vector2u          m_size;           //!< Current size of the window
+    std::unique_ptr<priv::WindowImpl> m_impl; //!< Platform-specific implementation of the window
+    Vector2u                          m_size; //!< Current size of the window
 };
 
 } // namespace sf
@@ -514,8 +514,7 @@ private:
 /// while (window.isOpen())
 /// {
 ///    // Event processing
-///    sf::Event event;
-///    while (window.pollEvent(event))
+///    for (sf::Event event; window.pollEvent(event);)
 ///    {
 ///        // Request for closing the window
 ///        if (event.type == sf::Event::Closed)

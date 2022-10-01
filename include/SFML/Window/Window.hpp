@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////
 //
 // SFML - Simple and Fast Multimedia Library
-// Copyright (C) 2007-2021 Laurent Gomila (laurent@sfml-dev.org)
+// Copyright (C) 2007-2022 Laurent Gomila (laurent@sfml-dev.org)
 //
 // This software is provided 'as-is', without any express or implied warranty.
 // In no event will the authors be held liable for any damages arising from the use of this software.
@@ -28,16 +28,20 @@
 ////////////////////////////////////////////////////////////
 // Headers
 ////////////////////////////////////////////////////////////
+#include <SFML/System/Clock.hpp>
+#include <SFML/System/Time.hpp>
 #include <SFML/Window/ContextSettings.hpp>
 #include <SFML/Window/GlResource.hpp>
 #include <SFML/Window/WindowBase.hpp>
+
+#include <memory>
 
 
 namespace sf
 {
 namespace priv
 {
-    class GlContext;
+class GlContext;
 }
 
 class Event;
@@ -49,7 +53,6 @@ class Event;
 class SFML_WINDOW_API Window : public WindowBase, GlResource
 {
 public:
-
     ////////////////////////////////////////////////////////////
     /// \brief Default constructor
     ///
@@ -78,7 +81,10 @@ public:
     /// \param settings Additional settings for the underlying OpenGL context
     ///
     ////////////////////////////////////////////////////////////
-    Window(VideoMode mode, const String& title, Uint32 style = Style::Default, const ContextSettings& settings = ContextSettings());
+    Window(VideoMode              mode,
+           const String&          title,
+           std::uint32_t          style    = Style::Default,
+           const ContextSettings& settings = ContextSettings());
 
     ////////////////////////////////////////////////////////////
     /// \brief Construct the window from an existing control
@@ -116,7 +122,7 @@ public:
     /// \param style    %Window style, a bitwise OR combination of sf::Style enumerators
     ///
     ////////////////////////////////////////////////////////////
-    void create(VideoMode mode, const String& title, Uint32 style = Style::Default) override;
+    void create(VideoMode mode, const String& title, std::uint32_t style = Style::Default) override;
 
     ////////////////////////////////////////////////////////////
     /// \brief Create (or recreate) the window
@@ -135,7 +141,7 @@ public:
     /// \param settings Additional settings for the underlying OpenGL context
     ///
     ////////////////////////////////////////////////////////////
-    virtual void create(VideoMode mode, const String& title, Uint32 style, const ContextSettings& settings);
+    virtual void create(VideoMode mode, const String& title, std::uint32_t style, const ContextSettings& settings);
 
     ////////////////////////////////////////////////////////////
     /// \brief Create (or recreate) the window from an existing control
@@ -252,7 +258,6 @@ public:
     void display();
 
 private:
-
     ////////////////////////////////////////////////////////////
     /// \brief Processes an event before it is sent to the user
     ///
@@ -276,9 +281,9 @@ private:
     ////////////////////////////////////////////////////////////
     // Member data
     ////////////////////////////////////////////////////////////
-    priv::GlContext*  m_context;        //!< Platform-specific implementation of the OpenGL context
-    Clock             m_clock;          //!< Clock for measuring the elapsed time between frames
-    Time              m_frameTimeLimit; //!< Current framerate limit
+    std::unique_ptr<priv::GlContext> m_context;        //!< Platform-specific implementation of the OpenGL context
+    Clock                            m_clock;          //!< Clock for measuring the elapsed time between frames
+    Time                             m_frameTimeLimit; //!< Current framerate limit
 };
 
 } // namespace sf
@@ -333,8 +338,7 @@ private:
 /// while (window.isOpen())
 /// {
 ///    // Event processing
-///    sf::Event event;
-///    while (window.pollEvent(event))
+///    for (sf::Event event; window.pollEvent(event);)
 ///    {
 ///        // Request for closing the window
 ///        if (event.type == sf::Event::Closed)

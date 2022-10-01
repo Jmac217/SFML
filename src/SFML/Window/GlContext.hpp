@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////
 //
 // SFML - Simple and Fast Multimedia Library
-// Copyright (C) 2007-2021 Laurent Gomila (laurent@sfml-dev.org)
+// Copyright (C) 2007-2022 Laurent Gomila (laurent@sfml-dev.org)
 //
 // This software is provided 'as-is', without any express or implied warranty.
 // In no event will the authors be held liable for any damages arising from the use of this software.
@@ -29,9 +29,13 @@
 // Headers
 ////////////////////////////////////////////////////////////
 #include <SFML/Config.hpp>
+
 #include <SFML/Window/Context.hpp>
 #include <SFML/Window/ContextSettings.hpp>
 #include <SFML/Window/GlResource.hpp>
+
+#include <cstdint>
+#include <memory>
 
 
 namespace sf
@@ -47,7 +51,6 @@ class WindowImpl;
 class GlContext
 {
 public:
-
     ////////////////////////////////////////////////////////////
     /// \brief Perform resource initialization
     ///
@@ -100,10 +103,10 @@ public:
     /// This function automatically chooses the specialized class
     /// to use according to the OS.
     ///
-    /// \return Pointer to the created context (don't forget to delete it)
+    /// \return Pointer to the created context
     ///
     ////////////////////////////////////////////////////////////
-    static GlContext* create();
+    static std::unique_ptr<GlContext> create();
 
     ////////////////////////////////////////////////////////////
     /// \brief Create a new context attached to a window
@@ -118,7 +121,7 @@ public:
     /// \return Pointer to the created context
     ///
     ////////////////////////////////////////////////////////////
-    static GlContext* create(const ContextSettings& settings, const WindowImpl* owner, unsigned int bitsPerPixel);
+    static std::unique_ptr<GlContext> create(const ContextSettings& settings, const WindowImpl& owner, unsigned int bitsPerPixel);
 
     ////////////////////////////////////////////////////////////
     /// \brief Create a new context that embeds its own rendering target
@@ -127,13 +130,12 @@ public:
     /// to use according to the OS.
     ///
     /// \param settings Creation parameters
-    /// \param width    Back buffer width
-    /// \param height   Back buffer height
+    /// \param size     Back buffer width and height
     ///
     /// \return Pointer to the created context
     ///
     ////////////////////////////////////////////////////////////
-    static GlContext* create(const ContextSettings& settings, unsigned int width, unsigned int height);
+    static std::unique_ptr<GlContext> create(const ContextSettings& settings, const Vector2u& size);
 
 public:
     ////////////////////////////////////////////////////////////
@@ -173,7 +175,7 @@ public:
     /// \return The active context's ID or 0 if no context is currently active
     ///
     ////////////////////////////////////////////////////////////
-    static Uint64 getActiveContextId();
+    static std::uint64_t getActiveContextId();
 
     ////////////////////////////////////////////////////////////
     /// \brief Destructor
@@ -241,7 +243,6 @@ public:
     virtual void setVerticalSyncEnabled(bool enabled) = 0;
 
 protected:
-
     ////////////////////////////////////////////////////////////
     /// \brief Default constructor
     ///
@@ -287,7 +288,14 @@ protected:
     /// \return Score of the configuration
     ///
     ////////////////////////////////////////////////////////////
-    static int evaluateFormat(unsigned int bitsPerPixel, const ContextSettings& settings, int colorBits, int depthBits, int stencilBits, int antialiasing, bool accelerated, bool sRgb);
+    static int evaluateFormat(unsigned int           bitsPerPixel,
+                              const ContextSettings& settings,
+                              int                    colorBits,
+                              int                    depthBits,
+                              int                    stencilBits,
+                              int                    antialiasing,
+                              bool                   accelerated,
+                              bool                   sRgb);
 
     ////////////////////////////////////////////////////////////
     // Member data
@@ -295,7 +303,6 @@ protected:
     ContextSettings m_settings; //!< Creation settings of the context
 
 private:
-
     ////////////////////////////////////////////////////////////
     /// \brief Perform various initializations after the context construction
     /// \param requestedSettings Requested settings during context creation
@@ -313,7 +320,7 @@ private:
     ////////////////////////////////////////////////////////////
     // Member data
     ////////////////////////////////////////////////////////////
-    const Uint64 m_id; //!< Unique number that identifies the context
+    const std::uint64_t m_id; //!< Unique number that identifies the context
 };
 
 } // namespace priv

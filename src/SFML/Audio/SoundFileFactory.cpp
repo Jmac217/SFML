@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////
 //
 // SFML - Simple and Fast Multimedia Library
-// Copyright (C) 2007-2021 Laurent Gomila (laurent@sfml-dev.org)
+// Copyright (C) 2007-2022 Laurent Gomila (laurent@sfml-dev.org)
 //
 // This software is provided 'as-is', without any express or implied warranty.
 // In no event will the authors be held liable for any damages arising from the use of this software.
@@ -27,36 +27,39 @@
 ////////////////////////////////////////////////////////////
 #include <SFML/Audio/SoundFileFactory.hpp>
 #include <SFML/Audio/SoundFileReaderFlac.hpp>
-#include <SFML/Audio/SoundFileWriterFlac.hpp>
 #include <SFML/Audio/SoundFileReaderMp3.hpp>
 #include <SFML/Audio/SoundFileReaderOgg.hpp>
-#include <SFML/Audio/SoundFileWriterOgg.hpp>
 #include <SFML/Audio/SoundFileReaderWav.hpp>
+#include <SFML/Audio/SoundFileWriterFlac.hpp>
+#include <SFML/Audio/SoundFileWriterOgg.hpp>
 #include <SFML/Audio/SoundFileWriterWav.hpp>
+#include <SFML/System/Err.hpp>
 #include <SFML/System/FileInputStream.hpp>
 #include <SFML/System/MemoryInputStream.hpp>
-#include <SFML/System/Err.hpp>
+#include <SFML/System/Utils.hpp>
+
+#include <ostream>
 
 
 namespace
 {
-    // Register all the built-in readers and writers if not already done
-    void ensureDefaultReadersWritersRegistered()
+// Register all the built-in readers and writers if not already done
+void ensureDefaultReadersWritersRegistered()
+{
+    static bool registered = false;
+    if (!registered)
     {
-        static bool registered = false;
-        if (!registered)
-        {
-            sf::SoundFileFactory::registerReader<sf::priv::SoundFileReaderFlac>();
-            sf::SoundFileFactory::registerWriter<sf::priv::SoundFileWriterFlac>();
-            sf::SoundFileFactory::registerReader<sf::priv::SoundFileReaderMp3>();
-            sf::SoundFileFactory::registerReader<sf::priv::SoundFileReaderOgg>();
-            sf::SoundFileFactory::registerWriter<sf::priv::SoundFileWriterOgg>();
-            sf::SoundFileFactory::registerReader<sf::priv::SoundFileReaderWav>();
-            sf::SoundFileFactory::registerWriter<sf::priv::SoundFileWriterWav>();
-            registered = true;
-        }
+        sf::SoundFileFactory::registerReader<sf::priv::SoundFileReaderFlac>();
+        sf::SoundFileFactory::registerWriter<sf::priv::SoundFileWriterFlac>();
+        sf::SoundFileFactory::registerReader<sf::priv::SoundFileReaderMp3>();
+        sf::SoundFileFactory::registerReader<sf::priv::SoundFileReaderOgg>();
+        sf::SoundFileFactory::registerWriter<sf::priv::SoundFileWriterOgg>();
+        sf::SoundFileFactory::registerReader<sf::priv::SoundFileReaderWav>();
+        sf::SoundFileFactory::registerWriter<sf::priv::SoundFileWriterWav>();
+        registered = true;
     }
 }
+} // namespace
 
 namespace sf
 {
@@ -65,15 +68,16 @@ SoundFileFactory::WriterFactoryArray SoundFileFactory::s_writers;
 
 
 ////////////////////////////////////////////////////////////
-SoundFileReader* SoundFileFactory::createReaderFromFilename(const std::string& filename)
+std::unique_ptr<SoundFileReader> SoundFileFactory::createReaderFromFilename(const std::filesystem::path& filename)
 {
     // Register the built-in readers/writers on first call
     ensureDefaultReadersWritersRegistered();
 
     // Wrap the input file into a file stream
     FileInputStream stream;
-    if (!stream.open(filename)) {
-        err() << "Failed to open sound file \"" << filename << "\" (couldn't open stream)" << std::endl;
+    if (!stream.open(filename))
+    {
+        err() << "Failed to open sound file (couldn't open stream)\n" << formatDebugPathInfo(filename) << std::endl;
         return nullptr;
     }
 
@@ -91,13 +95,13 @@ SoundFileReader* SoundFileFactory::createReaderFromFilename(const std::string& f
     }
 
     // No suitable reader found
-    err() << "Failed to open sound file \"" << filename << "\" (format not supported)" << std::endl;
+    err() << "Failed to open sound file (format not supported)\n" << formatDebugPathInfo(filename) << std::endl;
     return nullptr;
 }
 
 
 ////////////////////////////////////////////////////////////
-SoundFileReader* SoundFileFactory::createReaderFromMemory(const void* data, std::size_t sizeInBytes)
+std::unique_ptr<SoundFileReader> SoundFileFactory::createReaderFromMemory(const void* data, std::size_t sizeInBytes)
 {
     // Register the built-in readers/writers on first call
     ensureDefaultReadersWritersRegistered();
@@ -126,7 +130,7 @@ SoundFileReader* SoundFileFactory::createReaderFromMemory(const void* data, std:
 
 
 ////////////////////////////////////////////////////////////
-SoundFileReader* SoundFileFactory::createReaderFromStream(InputStream& stream)
+std::unique_ptr<SoundFileReader> SoundFileFactory::createReaderFromStream(InputStream& stream)
 {
     // Register the built-in readers/writers on first call
     ensureDefaultReadersWritersRegistered();
@@ -151,7 +155,7 @@ SoundFileReader* SoundFileFactory::createReaderFromStream(InputStream& stream)
 
 
 ////////////////////////////////////////////////////////////
-SoundFileWriter* SoundFileFactory::createWriterFromFilename(const std::string& filename)
+std::unique_ptr<SoundFileWriter> SoundFileFactory::createWriterFromFilename(const std::filesystem::path& filename)
 {
     // Register the built-in readers/writers on first call
     ensureDefaultReadersWritersRegistered();
@@ -164,7 +168,7 @@ SoundFileWriter* SoundFileFactory::createWriterFromFilename(const std::string& f
     }
 
     // No suitable writer found
-    err() << "Failed to open sound file \"" << filename << "\" (format not supported)" << std::endl;
+    err() << "Failed to open sound file (format not supported)\n" << formatDebugPathInfo(filename) << std::endl;
     return nullptr;
 }
 

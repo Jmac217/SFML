@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////
 //
 // SFML - Simple and Fast Multimedia Library
-// Copyright (C) 2007-2021 Laurent Gomila (laurent@sfml-dev.org)
+// Copyright (C) 2007-2022 Laurent Gomila (laurent@sfml-dev.org)
 //
 // This software is provided 'as-is', without any express or implied warranty.
 // In no event will the authors be held liable for any damages arising from the use of this software.
@@ -28,12 +28,15 @@
 ////////////////////////////////////////////////////////////
 // Headers
 ////////////////////////////////////////////////////////////
+#include <SFML/System/Clock.hpp>
+#include <SFML/System/Vector2.hpp>
 #include <SFML/Window/GlContext.hpp>
 #include <SFML/Window/iOS/ObjCType.hpp>
-#include <SFML/System/Vector2.hpp>
-#include <SFML/System/Clock.hpp>
+
 #include <glad/gl.h>
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 
 SFML_DECLARE_OBJC_CLASS(EAGLContext);
 SFML_DECLARE_OBJC_CLASS(SFView);
@@ -51,7 +54,6 @@ class WindowImplUIKit;
 class EaglContext : public GlContext
 {
 public:
-
     ////////////////////////////////////////////////////////////
     /// \brief Create a new context, not associated to a window
     ///
@@ -69,20 +71,17 @@ public:
     /// \param bitsPerPixel Pixel depth, in bits per pixel
     ///
     ////////////////////////////////////////////////////////////
-    EaglContext(EaglContext* shared, const ContextSettings& settings,
-                const WindowImpl* owner, unsigned int bitsPerPixel);
+    EaglContext(EaglContext* shared, const ContextSettings& settings, const WindowImpl& owner, unsigned int bitsPerPixel);
 
     ////////////////////////////////////////////////////////////
     /// \brief Create a new context that embeds its own rendering target
     ///
     /// \param shared   Context to share the new one with
     /// \param settings Creation parameters
-    /// \param width    Back buffer width, in pixels
-    /// \param height   Back buffer height, in pixels
+    /// \param size     Back buffer width and height, in pixels
     ///
     ////////////////////////////////////////////////////////////
-    EaglContext(EaglContext* shared, const ContextSettings& settings,
-                unsigned int width, unsigned int height);
+    EaglContext(EaglContext* shared, const ContextSettings& settings, const Vector2u& size);
 
     ////////////////////////////////////////////////////////////
     /// \brief Destructor
@@ -131,7 +130,6 @@ public:
     void setVerticalSyncEnabled(bool enabled) override;
 
 protected:
-
     ////////////////////////////////////////////////////////////
     /// \brief Activate the context as the current target
     ///        for rendering
@@ -144,34 +142,35 @@ protected:
     bool makeCurrent(bool current) override;
 
 private:
-
     ////////////////////////////////////////////////////////////
     /// \brief Create the context
     ///
     /// \param shared       Context to share the new one with (can be a null pointer)
-    /// \param window       Window to attach the context to (can be a null pointer)
+    /// \param window       Window to attach the context to
     /// \param bitsPerPixel Pixel depth, in bits per pixel
     /// \param settings     Creation parameters
     ///
     ////////////////////////////////////////////////////////////
-    void createContext(EaglContext* shared,
-                       const WindowImplUIKit* window,
-                       unsigned int bitsPerPixel,
+    void createContext(EaglContext*           shared,
+                       const WindowImplUIKit& window,
+                       unsigned int           bitsPerPixel,
                        const ContextSettings& settings);
 
     ////////////////////////////////////////////////////////////
     // Member data
     ////////////////////////////////////////////////////////////
-    EAGLContext* m_context; ///< The internal context
-    GLuint m_framebuffer;   ///< Frame buffer associated to the context
-    GLuint m_colorbuffer;   ///< Color render buffer
-    GLuint m_depthbuffer;   ///< Depth render buffer
-    bool m_vsyncEnabled;    ///< Vertical sync activation flag
-    Clock m_clock;          ///< Measures the elapsed time for the fake v-sync implementation
+    EAGLContext* m_context;      ///< The internal context
+    GLuint       m_framebuffer;  ///< Frame buffer associated to the context
+    GLuint       m_colorbuffer;  ///< Color render buffer
+    GLuint       m_depthbuffer;  ///< Depth render buffer
+    bool         m_vsyncEnabled; ///< Vertical sync activation flag
+    Clock        m_clock;        ///< Measures the elapsed time for the fake v-sync implementation
 };
 
 } // namespace priv
 
 } // namespace sf
+
+#pragma GCC diagnostic pop
 
 #endif // SFML_EAGLCONTEXT_HPP

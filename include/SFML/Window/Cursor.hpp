@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////
 //
 // SFML - Simple and Fast Multimedia Library
-// Copyright (C) 2007-2021 Laurent Gomila (laurent@sfml-dev.org)
+// Copyright (C) 2007-2022 Laurent Gomila (laurent@sfml-dev.org)
 //
 // This software is provided 'as-is', without any express or implied warranty.
 // In no event will the authors be held liable for any damages arising from the use of this software.
@@ -29,13 +29,17 @@
 // Headers
 ////////////////////////////////////////////////////////////
 #include <SFML/Window/Export.hpp>
+
 #include <SFML/System/Vector2.hpp>
+
+#include <cstdint>
+#include <memory>
 
 namespace sf
 {
 namespace priv
 {
-    class CursorImpl;
+class CursorImpl;
 }
 
 ////////////////////////////////////////////////////////////
@@ -45,7 +49,6 @@ namespace priv
 class SFML_WINDOW_API Cursor
 {
 public:
-
     ////////////////////////////////////////////////////////////
     /// \brief Enumeration of the native system cursor types
     ///
@@ -98,17 +101,16 @@ public:
         SizeTop,                //!< Up arrow cursor on Linux, same as SizeVertical on other platforms
         SizeBottom,             //!< Down arrow cursor on Linux, same as SizeVertical on other platforms
         SizeTopLeft,            //!< Top-left arrow cursor on Linux, same as SizeTopLeftBottomRight on other platforms
-        SizeBottomRight,        //!< Bottom-right arrow cursor on Linux, same as SizeTopLeftBottomRight on other platforms
-        SizeBottomLeft,         //!< Bottom-left arrow cursor on Linux, same as SizeBottomLeftTopRight on other platforms
-        SizeTopRight,           //!< Top-right arrow cursor on Linux, same as SizeBottomLeftTopRight on other platforms
-        SizeAll,                //!< Combination of SizeHorizontal and SizeVertical
-        Cross,                  //!< Crosshair cursor
-        Help,                   //!< Help cursor
-        NotAllowed              //!< Action not allowed cursor
+        SizeBottomRight, //!< Bottom-right arrow cursor on Linux, same as SizeTopLeftBottomRight on other platforms
+        SizeBottomLeft,  //!< Bottom-left arrow cursor on Linux, same as SizeBottomLeftTopRight on other platforms
+        SizeTopRight,    //!< Top-right arrow cursor on Linux, same as SizeBottomLeftTopRight on other platforms
+        SizeAll,         //!< Combination of SizeHorizontal and SizeVertical
+        Cross,           //!< Crosshair cursor
+        Help,            //!< Help cursor
+        NotAllowed       //!< Action not allowed cursor
     };
 
 public:
-
     ////////////////////////////////////////////////////////////
     /// \brief Default constructor
     ///
@@ -171,7 +173,7 @@ public:
     ///         false otherwise
     ///
     ////////////////////////////////////////////////////////////
-    [[nodiscard]] bool loadFromPixels(const Uint8* pixels, Vector2u size, Vector2u hotspot);
+    [[nodiscard]] bool loadFromPixels(const std::uint8_t* pixels, Vector2u size, Vector2u hotspot);
 
     ////////////////////////////////////////////////////////////
     /// \brief Create a native system cursor
@@ -190,7 +192,6 @@ public:
     [[nodiscard]] bool loadFromSystem(Type type);
 
 private:
-
     friend class WindowBase;
 
     ////////////////////////////////////////////////////////////
@@ -205,11 +206,10 @@ private:
     const priv::CursorImpl& getImpl() const;
 
 private:
-
     ////////////////////////////////////////////////////////////
     // Member data
     ////////////////////////////////////////////////////////////
-    priv::CursorImpl* m_impl; //!< Platform-specific implementation of the cursor
+    std::unique_ptr<priv::CursorImpl> m_impl; //!< Platform-specific implementation of the cursor
 };
 
 } // namespace sf

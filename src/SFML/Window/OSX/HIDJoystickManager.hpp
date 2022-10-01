@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////
 //
 // SFML - Simple and Fast Multimedia Library
-// Copyright (C) 2007-2021 Marco Antognini (antognini.marco@gmail.com),
+// Copyright (C) 2007-2022 Marco Antognini (antognini.marco@gmail.com),
 //                         Laurent Gomila (laurent@sfml-dev.org)
 //
 // This software is provided 'as-is', without any express or implied warranty.
@@ -46,7 +46,6 @@ namespace priv
 class HIDJoystickManager
 {
 public:
-
     ////////////////////////////////////////////////////////////
     /// \brief Get the unique instance of the class
     ///
@@ -58,7 +57,6 @@ public:
     static HIDJoystickManager& getInstance();
 
 public:
-
     ////////////////////////////////////////////////////////////
     /// \brief Get the number of currently connected joystick
     ///
@@ -74,7 +72,6 @@ public:
     CFSetRef copyJoysticks();
 
 private:
-
     ////////////////////////////////////////////////////////////
     /// \brief Default constructor
     ///
@@ -106,7 +103,6 @@ private:
     void update();
 
 private:
-
     ////////////////////////////////////////////////////////////
     /// \brief Private "plug-in" callback
     /// \note Only 'context' parameter is used.
@@ -124,12 +120,11 @@ private:
     static void pluggedOut(void* context, IOReturn, void*, IOHIDDeviceRef);
 
 private:
-
     ////////////////////////////////////////////////////////////
     // Member data
     ////////////////////////////////////////////////////////////
-    IOHIDManagerRef m_manager;      ///< HID Manager
-    unsigned int    m_joystickCount;///< Number of joysticks currently connected
+    IOHIDManagerRef m_manager;       ///< HID Manager
+    unsigned int    m_joystickCount; ///< Number of joysticks currently connected
 };
 
 
