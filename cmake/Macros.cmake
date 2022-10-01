@@ -300,9 +300,6 @@ macro(sfml_add_example target)
         add_executable(${target} ${target_input})
     endif()
 
-    # enable C++17 support
-    target_compile_features(${target} PUBLIC cxx_std_17)
-
     if (SFML_USE_STATIC_STD_LIBS)
         set_property(TARGET ${target} PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
     endif()
@@ -350,9 +347,6 @@ function(sfml_add_test target SOURCES DEPENDS)
 
     # create the target
     add_executable(${target} ${SOURCES})
-
-    # enable C++17 support
-    target_compile_features(${target} PUBLIC cxx_std_17)
 
     # enable precompiled headers
     if (SFML_ENABLE_PCH)
