@@ -33,16 +33,13 @@
 
 #ifdef SFML_SYSTEM_WINDOWS
 
-// #include <SFML/System/Win32/WindowsHeader.hpp>
-
-// #include <winsock2.h>
-// #include <ws2tcpip.h>
-// #include <dinput.h>
-// #include <mmsystem.h>
-// #include <regstr.h>
-// #include <tchar.h>
+#define UNICODE 1
+#define _UNICODE 1
+#include <SFML/System/Win32/WindowsHeader.hpp>
 
 #endif // SFML_SYSTEM_WINDOWS
+
+#include <SFML/Graphics/Rect.hpp>
 
 #include <SFML/System/Err.hpp>
 #include <SFML/System/String.hpp>
@@ -58,6 +55,7 @@
 #include <mutex>
 #include <ostream>
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 #include <cassert>
