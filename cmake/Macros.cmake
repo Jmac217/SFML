@@ -91,7 +91,7 @@ macro(sfml_add_library module)
     set_public_symbols_hidden(${target})
 
     # enable precompiled headers
-    if ((NOT BUILD_SHARED_LIBS) AND (NOT ${target} STREQUAL "sfml-system"))
+    if (SFML_ENABLE_PCH AND (NOT ${target} STREQUAL "sfml-system"))
         message(VERBOSE "enabling PCH for SFML library '${target}'")
         target_precompile_headers(${target} REUSE_FROM sfml-system)
     endif()
@@ -299,6 +299,9 @@ macro(sfml_add_example target)
     else()
         add_executable(${target} ${target_input})
     endif()
+
+    # enable C++17 support
+    target_compile_features(${target} PUBLIC cxx_std_17)
 
     if (SFML_USE_STATIC_STD_LIBS)
         set_property(TARGET ${target} PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
