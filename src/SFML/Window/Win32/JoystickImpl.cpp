@@ -1079,7 +1079,7 @@ JoystickState JoystickImpl::updateDInputPolled()
 
 
 ////////////////////////////////////////////////////////////
-BOOL CALLBACK JoystickImpl::deviceEnumerationCallback(const DIDEVICEINSTANCEW* deviceInstance, void*)
+BOOL CALLBACK JoystickImpl::deviceEnumerationCallback(const DIDEVICEINSTANCE* deviceInstance, void*)
 {
     for (JoystickRecord& record : joystickList)
     {
@@ -1099,7 +1099,7 @@ BOOL CALLBACK JoystickImpl::deviceEnumerationCallback(const DIDEVICEINSTANCEW* d
 
 
 ////////////////////////////////////////////////////////////
-BOOL CALLBACK JoystickImpl::deviceObjectEnumerationCallback(const DIDEVICEOBJECTINSTANCEW* deviceObjectInstance, void* userData)
+BOOL CALLBACK JoystickImpl::deviceObjectEnumerationCallback(const DIDEVICEOBJECTINSTANCE* deviceObjectInstance, void* userData)
 {
     sf::priv::JoystickImpl& joystick = *reinterpret_cast<sf::priv::JoystickImpl*>(userData);
 

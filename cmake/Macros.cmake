@@ -81,6 +81,12 @@ macro(sfml_add_library module)
 
     set_target_warnings(${target})
 
+    # enable precompiled headers
+    if ((NOT BUILD_SHARED_LIBS) AND (NOT ${target} STREQUAL "sfml-system"))
+        message(STATUS "enabling PCH for SFML library '${target}'")
+        target_precompile_headers(${target} REUSE_FROM sfml-system)
+    endif()
+
     # define the export symbol of the module
     string(REPLACE "-" "_" NAME_UPPER "${target}")
     string(TOUPPER "${NAME_UPPER}" NAME_UPPER)
@@ -286,7 +292,10 @@ macro(sfml_add_example target)
     endif()
 
     # enable precompiled headers
-    # target_precompile_headers(${target} REUSE_FROM sfml-system)
+    if (NOT BUILD_SHARED_LIBS)
+        message(STATUS "enabling PCH for SFML example '${target}'")
+        target_precompile_headers(${target} REUSE_FROM sfml-system)
+    endif()
 
     set_target_warnings(${target})
 
@@ -301,6 +310,11 @@ macro(sfml_add_example target)
 
     # set the Visual Studio startup path for debugging
     set_target_properties(${target} PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
+
+    # ensure public symbols are hidden by default (exported ones are explicitly marked)
+    set_target_properties(${target} PROPERTIES
+                          CXX_VISIBILITY_PRESET hidden
+                          VISIBILITY_INLINES_HIDDEN YES)
 
     # link the target to its SFML dependencies
     if(THIS_DEPENDS)
@@ -329,7 +343,10 @@ function(sfml_add_test target SOURCES DEPENDS)
     target_compile_features(${target} PUBLIC cxx_std_17)
 
     # enable precompiled headers
-    # target_precompile_headers(${target} REUSE_FROM sfml-system)
+    if (NOT BUILD_SHARED_LIBS)
+        message(STATUS "enabling PCH for SFML test '${target}'")
+        target_precompile_headers(${target} REUSE_FROM sfml-system)
+    endif()
 
     # set the target's folder (for IDEs that support it, e.g. Visual Studio)
     set_target_properties(${target} PROPERTIES FOLDER "Tests")
@@ -338,6 +355,11 @@ function(sfml_add_test target SOURCES DEPENDS)
     target_link_libraries(${target} PRIVATE ${DEPENDS} sfml-test-main)
 
     set_target_warnings(${target})
+
+    # ensure public symbols are hidden by default (exported ones are explicitly marked)
+    set_target_properties(${target} PROPERTIES
+                          CXX_VISIBILITY_PRESET hidden
+                          VISIBILITY_INLINES_HIDDEN YES)
 
     # If coverage is enabled for MSVC and we are linking statically, use /WHOLEARCHIVE
     # to make sure the linker doesn't discard unused code sections before coverage can be measured

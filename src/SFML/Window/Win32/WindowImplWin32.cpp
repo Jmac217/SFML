@@ -499,7 +499,7 @@ void WindowImplWin32::registerWindowClass()
 ////////////////////////////////////////////////////////////
 void WindowImplWin32::switchToFullscreen(const VideoMode& mode)
 {
-    DEVMODEW devMode;
+    DEVMODE devMode;
     devMode.dmSize       = sizeof(devMode);
     devMode.dmPelsWidth  = mode.size.x;
     devMode.dmPelsHeight = mode.size.y;

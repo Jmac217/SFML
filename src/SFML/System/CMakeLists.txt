@@ -67,8 +67,11 @@ endif()
 sfml_add_library(System
                  SOURCES ${SRC} ${PLATFORM_SRC})
 
-set_file_warnings("${CMAKE_SOURCE_DIR}/src/SFML/PCH.hpp")
-target_precompile_headers(sfml-system PRIVATE "${CMAKE_SOURCE_DIR}/src/SFML/PCH.hpp")
+# enable precompiled headers
+if (NOT BUILD_SHARED_LIBS)
+    message(STATUS "enabling PCH for SFML library 'sfml-system'")
+    target_precompile_headers(sfml-system PRIVATE "${CMAKE_SOURCE_DIR}/src/SFML/PCH.hpp")
+endif()
 
 if(SFML_OS_ANDROID)
     # glad sources

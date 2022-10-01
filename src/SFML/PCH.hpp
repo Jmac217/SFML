@@ -31,26 +31,38 @@
 
 #include <SFML/Config.hpp>
 
-/*
 #ifdef SFML_SYSTEM_WINDOWS
 
-#include <SFML/System/Win32/WindowsHeader.hpp>
+// #include <SFML/System/Win32/WindowsHeader.hpp>
 
-#include <winsock2.h>
-#include <ws2tcpip.h>
-#include <tchar.h>
-#include <regstr.h>
-#include <mmsystem.h>
-#include <dinput.h>
+// #include <winsock2.h>
+// #include <ws2tcpip.h>
+// #include <dinput.h>
+// #include <mmsystem.h>
+// #include <regstr.h>
+// #include <tchar.h>
 
 #endif // SFML_SYSTEM_WINDOWS
-*/
 
 #include <SFML/System/Err.hpp>
 #include <SFML/System/String.hpp>
+#include <SFML/System/String.hpp>
+#include <SFML/System/Time.hpp>
+#include <SFML/System/Vector2.hpp>
 
 #include <algorithm>
+#include <chrono>
+#include <filesystem>
 #include <iostream>
+#include <memory>
+#include <mutex>
+#include <ostream>
 #include <string>
+#include <vector>
+
+#include <cassert>
+#include <cmath>
+#include <cstdint>
+#include <cstring>
 
 #endif // SFML_SFML_PCH_HPP
