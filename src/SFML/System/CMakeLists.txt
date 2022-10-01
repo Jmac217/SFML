@@ -68,8 +68,8 @@ sfml_add_library(System
                  SOURCES ${SRC} ${PLATFORM_SRC})
 
 # enable precompiled headers
-if (NOT BUILD_SHARED_LIBS)
-    message(STATUS "enabling PCH for SFML library 'sfml-system'")
+if (SFML_ENABLE_PCH)
+    message(VERBOSE "enabling PCH for SFML library 'sfml-system' (reusable)")
     target_precompile_headers(sfml-system PRIVATE "${CMAKE_SOURCE_DIR}/src/SFML/PCH.hpp")
 endif()
 
