@@ -182,9 +182,9 @@ macro(sfml_add_library module)
             if(SFML_ENABLE_PCH)
                 message(VERBOSE "overriding PDB name for '${target}' with \"sfml-s${SFML_PDB_POSTFIX}\" due to PCH being enabled")
 
-                # For PCH builds with PCH reuse, the PDB name must always be the same
+                # For PCH builds with PCH reuse, the PDB name must be the same as the target that's being reused
                 set_target_properties(${target} PROPERTIES
-                                    COMPILE_PDB_NAME "sfml-s${SFML_PDB_POSTFIX}"
+                                    COMPILE_PDB_NAME "sfml-system"
                                     COMPILE_PDB_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/lib")
             else()
                 # Static libraries have no linker PDBs, thus the compiler PDBs are relevant
