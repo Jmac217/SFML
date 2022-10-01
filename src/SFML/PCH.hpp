@@ -33,22 +33,24 @@
 
 #ifdef SFML_SYSTEM_WINDOWS
 
-#define UNICODE 1
+#define UNICODE  1
 #define _UNICODE 1
 #include <SFML/System/Win32/WindowsHeader.hpp>
 
 #endif // SFML_SYSTEM_WINDOWS
 
 #include <SFML/Graphics/Rect.hpp>
-
 #include <SFML/System/Err.hpp>
-#include <SFML/System/String.hpp>
 #include <SFML/System/String.hpp>
 #include <SFML/System/Time.hpp>
 #include <SFML/System/Vector2.hpp>
 
 #include <algorithm>
+#include <cassert>
 #include <chrono>
+#include <cmath>
+#include <cstdint>
+#include <cstring>
 #include <filesystem>
 #include <iostream>
 #include <memory>
@@ -57,10 +59,5 @@
 #include <string>
 #include <unordered_map>
 #include <vector>
-
-#include <cassert>
-#include <cmath>
-#include <cstdint>
-#include <cstring>
 
 #endif // SFML_SFML_PCH_HPP
