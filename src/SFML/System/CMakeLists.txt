@@ -69,7 +69,7 @@ sfml_add_library(System
 
 # enable precompiled headers
 if (SFML_ENABLE_PCH)
-    message(VERBOSE "enabling PCH for SFML library 'sfml-system' (reusable)")
+    message(VERBOSE "enabling PCH for SFML library 'sfml-system' (reused as the PCH for other SFML libraries)")
     target_precompile_headers(sfml-system PRIVATE "${CMAKE_SOURCE_DIR}/src/SFML/PCH.hpp")
 endif()
 
